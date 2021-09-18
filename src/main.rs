@@ -8,7 +8,7 @@ struct MyMap<K, V> {
     buckets: Vec<Option<(K, V)>>,
 }
 
-impl<K: Hash, V: Copy> MyMap<K, V> {
+impl<K: Hash, V: Clone> MyMap<K, V> {
     fn new() -> Self {
         let mut buckets: Vec<Option<(K, V)>> = Vec::with_capacity(INITIAL_BUCKET_SIZE);
         for _ in 0..INITIAL_BUCKET_SIZE {
@@ -29,7 +29,7 @@ impl<K: Hash, V: Copy> MyMap<K, V> {
 
     fn remove(&mut self, key: K) -> Option<V> {
         let index = self.hash(&key);
-        if let Some(v) = self.buckets.get(index).and_then(|elem| elem.as_ref()).map(|(_, v)| *v) {
+        if let Some(v) = self.buckets.get(index).and_then(|elem| elem.as_ref()).map(|(_, v)| v.clone()) {
               self.buckets.remove(index);
               Some(v)
         } else {
@@ -57,7 +57,7 @@ fn main() {
         if pair.is_none() {
             continue;
         }
-        println!("{}: {}", pair.unwrap().0, pair.unwrap().1);
+        println!("{}: {}", pair.as_ref().unwrap().0, pair.as_ref().unwrap().1);
     }
     
 }
